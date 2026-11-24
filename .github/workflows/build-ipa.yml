@@ -1,0 +1,61 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-ipa:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned iOS Release app
+        run: |
+          xcodebuild \
+            -project CerectAsstent2.xcodeproj \
+            -scheme CerectAsstent2 \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/CerectAsstent2.app Payload/
+          zip -r -y cerect_asstent_2_ios.ipa Payload
+          ls -lh cerect_asstent_2_ios.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cerect_asstent_2_ios
+          path: cerect_asstent_2_ios.ipa
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.0
+          name: "cerect asstent 2 iOS (v2.0)"
+          body: |
+            Automaticky sestavené `.ipa` pro iPhone / iPad (iOS 16+).
+            Nainstaluj přes **AltStore**, **SideStore**, **Sideloadly** nebo **TrollStore**.
+          files: cerect_asstent_2_ios.ipa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
