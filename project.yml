@@ -1,0 +1,33 @@
+name: CerectAsstent2
+options:
+  bundleIdPrefix: com.aistudio
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    MARKETING_VERSION: "2.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.9"
+    PRODUCT_NAME: "CerectAsstent2"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGN_IDENTITY: ""
+
+targets:
+  CerectAsstent2:
+    type: application
+    platform: iOS
+    sources:
+      - path: .
+        includes:
+          - "*.swift"
+    info:
+      path: Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.aistudio.cerectasstent2.ios
+        INFOPLIST_KEY_CFBundleDisplayName: "cerect asstent 2"
+        GENERATE_INFOPLIST_FILE: NO
